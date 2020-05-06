@@ -100,7 +100,7 @@ input[type="radio"]{
 
 
 select option{
-  color:black;
+  color:#666;
 }
 
 .uk-select option{
@@ -204,5 +204,34 @@ input:checked + .slider:before {
 
 option
 {
-  color:black !important;
+  color:#666 !important;
+}
+
+.ui-menu {
+  max-height: 500px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+
+.ui-menu-item{
+  width: 250px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tokenfield {
+  background-color:white;
+  color:#666;
+}
+.ui-widget-content {
+    background: white;
+}
+.ui-widget {
+    font-family: Verdana,Arial,sans-serif;
+    font-size: 0.8rem;
+}
+ 
+.token-label {
+	color:#666;
 }

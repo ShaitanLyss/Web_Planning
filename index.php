@@ -3,6 +3,7 @@ if(isset($_GET['token'])){
 //Config
 $url = "https://discordapp.com/api/webhooks/xxx";
 $seed = "";
+$logo = "https://cdn.discordapp.com/attachments/688340383117082733/688732386820620351/UR-logo2.png";
 //mettre les emot à '' pour désactiver
 $emot_twitch = ' <:custom_emoji_name:434370263518412820> ';
 $emot_roll20 = ' <:custom_emoji_name:493783713243725844> ';
@@ -26,11 +27,7 @@ if(isset($_POST['submit'])){
 		//Vérification du formulaire
 		$validation_Formulaire=1;
 		
-		if($_POST['system2']!="")
-		{
-			$system=$_POST['system2'];
-		}
-		elseif($_POST['system']!=""){
+		if($_POST['system']!=""){
 			$system=$_POST['system'];
 		}
 		else{
@@ -53,8 +50,10 @@ if(isset($_POST['submit'])){
 				':clapper:  **Titre** ' . $_POST['titre'] . '\n' .
 				':timer:  **Durée moyenne du scénario ** ' . $_POST['selectorTime'] . '\n' .
 				':crown:  **MJ** @' . $_POST['mj'] . '\n' .
-				'<:custom_emoji_name:434358038342664194>  **Système** ' . $system . '\n' .
+				':people_holding_hands:  **Joueurs** ' . $_POST['joueur'] . '\n' .
+				'<:custom_emoji_name:434358038342664194>  **JDR** ' . $system . '\n' .
 				':baby:  **PJ Mineur** ' . $_POST['pj'] . '\n';
+			$plateform="";
 			if ($_POST['diffusion1'] == "twitch" && $emot_twitch != '') {
 				$plateform .= $emot_twitch;
 			}
@@ -77,7 +76,7 @@ if(isset($_POST['submit'])){
 			if ($_POST['desc'] !== ""){
 				$desc=addcslashes($_POST['desc'],"\n\r");
 				$desc=preg_replace("/@/","",$desc);
-				$content .= ':grey_question:  **Détails**' . $desc . '\n';
+				$content .= ':grey_question:  **Détails** \n' . $desc . '\n';
 			}
 			$content .= '**Participe** :white_check_mark: / **Ne participe pas** :x:';
 			$payload = '{
@@ -85,7 +84,7 @@ if(isset($_POST['submit'])){
 					{
 						"thumbnail":
 						{
-							"url":"https://cdn.discordapp.com/attachments/688340383117082733/688732386820620351/UR-logo2.png"
+							"url":"'.$logo.'"
 						},
 							"title":"Nouveau jeu de rôle !",
 							"description":"'.$content.'",
@@ -133,17 +132,22 @@ if(isset($_POST['submit'])){
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <title>Le formulaire</title>
         <link rel="stylesheet" href="css/bootstrap.min.css">
-        <link rel="stylesheet" href="css/dark.css">
+		<link rel="stylesheet" href="css/bootstrap-tokenfield.min.css">		
         <link rel="stylesheet" href="css/nouislider.css">
         <link type="text/css" rel="stylesheet" href="css/tail.datetime-default.css">
         <link rel="stylesheet" href="css/tail.datetime-harx-dark.min.css">
+		<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/dark-hive/jquery-ui.css">
+		<link rel="stylesheet" href="css/dark.css">
         <link rel="icon" type="image/png" href="https://cdn.discordapp.com/attachments/457233258661281793/458727800048713728/dae-cmd.png">
-		<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+		<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
         <script src="js/bootstrap.min.js" ></script>
+		<script src="js/bootstrap-tokenfield.min.js"></script>
         <script src="js/script.js"></script>
         <script src="js/nouislider.js"></script>
         <script src="js/tail.datetime.js"></script>
         <script src="js/tail.datetime-fr.js"></script>
+		
 
     </head>
     <body onload="feed();" id="body"> <!--Quand la page se charge, appeler feed()-->
@@ -165,6 +169,7 @@ if(isset($_POST['submit'])){
 							<div class="form-group row">
 								<label class="col-sm-5 col-form-label">Nombre de joueurs</label>
 								<div class="col-sm-7">
+									<input type="hidden" name="joueur" id="joueur" >
 									<div id="range" style="color:black !important" aria-describedby="nbTxt">
 											<script>
 												var range = document.getElementById('range');
@@ -178,12 +183,11 @@ if(isset($_POST['submit'])){
 													},
 													padding:[1,1],
 													connect:true
-
 												});
 											</script>
 										</div>
 								</div>
-								<small id="nbTxt" class="form-text text-muted">Moins de 25 joueurs.</small>
+								<small id="nbTxt" class="form-text text-muted">Moins de 15 joueurs.</small>
 							</div>
 							
 							<div class="form-group row">
@@ -203,16 +207,18 @@ if(isset($_POST['submit'])){
 							<div class="form-group row">
 								<label class="col-sm-5 col-form-label">Date 📅 et heure ⌚</label>
 								<div class="col-sm-7">
-									<input id="date" name="date" type="text" class="tail-datetime-field" required style="border-radius: 0px !important; height:40px; width:100%"/>
+									<input id="date" name="date" type="text" class="tail-datetime-field" value="<?= date("d/m/Y")." 21h00" ?>" required style="border-radius: 0px !important; height:40px; width:100%"/>
 
 										<script type="text/javascript">
 											document.addEventListener("DOMContentLoaded", function(){
 												tail.DateTime(".tail-datetime-field", { dateFormat:"dd/mm/YYYY",
-													timeFormat:"HH:ii",
+													timeFormat:"HHhii",
+													timeHours:21,
+													timeMinutes:0,
 													locale:"fr",
 													timeSeconds:false,
 													viewDecades:false,
-													dateStart:new Date().toISOString().slice(0, 10)});
+													dateStart:new Date().toISOString().slice(0, 10)}).selectTime(21, 0, 0);
 											});
 										</script> <!--L'attribut required force un champ à être rempli-->
 									
@@ -248,94 +254,8 @@ if(isset($_POST['submit'])){
 							<div class="form-group row">
 								<label class="col-sm-5 col-form-label">JDR 🎲</label>
 								<div class="col-sm-7">
-									<select class="uk-select" name ="system" id="system">
-											<option hidden diasabled selected value="">Liste des JdR proposés</option>
-											<optgroup label="JdR Générique">
-												<option>Brigandyne</option>
-												<option>HomeBrew</option>
-												<option>D-Critique</option>
-												<option>GURPS</option>
-												<option>PbtA</option>
-												<option>SavageWolrd</option>
-												<option>Tiny</option>
-												<option>Trash</option>
-											</optgroup>
-											<optgroup label="JdR Médiéval Fantastique / épic">
-												<option>Agone</option>
-												<option>Anima</option>
-												<option>Antika</option>
-												<option>Ciels_Cuivre</option>
-												<option>D&D (d&d, Ad&d, chronique, pathfinder)</option>
-												<option>Ad&d</option>
-												<option>Chronique oublier</option>
-												<option>Pathfinder</option>
-												<option>Défis Fantastiques</option>
-												<option>DiscWorld</option>
-												<option>DragonAge</option>
-												<option>gobelin qui s'en dédit</option>
-												<option>GoT</option>
-												<option>Impertor</option>
-												<option>L5R</option>
-												<option>MyLittlePony</option>
-												<option>Naheulbeuk</option>
-												<option>Rêve de Dragon</option>
-												<option>Ryuutama</option>
-												<option>Tolkien</option>
-												<option>Shaan</option>
-												<option>Yggdrasil</option>
-												<option>WarHammer</option>
-											</optgroup>
-											<optgroup label="JdR Pirate / renaissance">
-												<option>7e-mer</option>
-												<option>Pavillion Noir</option>
-												<option>Cardinal (Les lames Du)</option>
-											</optgroup>
-											<optgroup label="JdR Western">
-												<option>DeadLands</option>
-											</optgroup>
-											<optgroup label="JdR Contemporain">
-												<option>Cats</option>
-												<option>Heroes (super et mutant Xmen)</option>
-												<option>HP</option>
-												<option>Tiny</option>
-												<option>Nephilim</option>
-											</optgroup>
-											<optgroup label="JdR Futuriste / post apo">
-												<option>COPS</option>
-												<option>Cyberpunk</option>
-												<option>Dégénésis</option>
-												<option>Eclipse phase</option>
-												<option>FallOut</option>
-												<option>Knight</option>
-												<option>Metal Adv</option>
-												<option>Numenéra</option>
-												<option>Polaris</option>
-												<option>Starwars</option>
-												<option>Terra X</option>
-												<option>Zombie</option>
-											</optgroup>
-											<optgroup label="JdR Dark / sexe / drogue / rock'n roll">
-												<option>BloodLust</option>
-												<option>Cthulhu</option>
-												<option>w40k-DarkHeresy</option>
-												<option>INSMV</option>
-												<option>Féals (Chronique des</option>
-												<option>Ombres d'Esteren</option>
-												<option>Patient 13</option>
-												<option>Paranoïa</option>
-												<option>Vampire</option>
-												<option>Scion</option>
-												<option>Sombre</option>
-												<option>Tales from the loop</option>
-											</optgroup>
-										</select>			
-								</div>
-							</div>
-							
-							<div class="form-group row">
-								<label class="col-sm-5 col-form-label">JDR Hors liste 🎲</label>
-								<div class="col-sm-7">
-									<input type="text" class="uk-input" placeholder="nom du jeu si hors liste" name="system2" id="system2" max="37"> 									
+									<input type="text" class="form-control uk-input" name ="system" id="system" placeholder="Entrez ce que vous cherchez" value="" required/>
+									
 								</div>
 							</div>
 							

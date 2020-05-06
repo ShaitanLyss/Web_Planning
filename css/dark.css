@@ -195,3 +195,37 @@ option
 {
   color:white !important;
 }
+
+.ui-menu {
+  max-height: 500px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+
+.ui-menu-item{
+  width: 250px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tokenfield {
+  background-color:#2C2F33;
+  color:white;
+}
+
+.ui-widget-content {
+    background: #2C2F33;
+}
+.ui-widget {
+    font-family: Verdana,Arial,sans-serif;
+    font-size: 0.8rem;
+}
+.token-label {
+	color:black;
+}
+
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: white;
+  opacity: 0.8; /* Firefox */
+}
