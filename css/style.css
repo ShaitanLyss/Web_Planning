@@ -1,0 +1,126 @@
+body {
+	--body-bg-dark: #444;
+	--body-color-dark: #ffc;
+	--section-bg-dark: #222;
+	--footer-bg-dark: #333;
+	--box-shadow-color-dark: #222;
+	--link-color-dark: #2196f3;
+	--accent-dark: #ff4;
+
+	--body-bg-light: #ffc;
+	--body-color-light: #444;
+	--section-bg-light: #dda;
+	--footer-bg-light: #886;
+	--box-shadow-color-light: #dda;
+	--link-color-light: #44a;
+	--accent-light: #8a4;
+}
+
+body, body.dark {
+	--body-bg: var(--body-bg-dark);
+	--body-color: var(--body-color-dark);
+	--section-bg: var(--section-bg-dark);
+	--footer-bg: var(--footer-bg-dark);
+	--box-shadow-color: var(--box-shadow-color-dark);
+	--link-color: var(--link-color-dark);
+	--accent: var(--accent-dark);
+}
+
+body.light {
+	--body-bg: var(--body-bg-light);
+	--body-color: var(--body-color-light);
+	--section-bg: var(--section-bg-light);
+	--footer-bg: var(--footer-bg-light);
+	--box-shadow-color: var(--box-shadow-color-light);
+	--link-color: var(--link-color-light);
+	--accent: var(--accent-light);
+}
+
+body {
+	margin: 40px auto;
+	max-width: 650px;
+	line-height: 1.6;
+	font-size: 16px;
+	font-family: sans-serif;
+	background: var(--body-bg);
+	color: var(--body-color);
+	padding: 0;
+	position: relative;
+}
+
+h1, h2, h3 {
+	line-height: 1.2;
+	color: var(--accent);
+}
+
+section, footer {
+	margin: 1em auto;
+	padding: 1em;
+	border-radius: 0.5em;
+	box-shadow: 0.5em 0.5em 0.5em var(--box-shadow-color);
+}
+
+section {
+	background: var(--section-bg);
+}
+
+footer {
+	background: var(--footer-bg);
+}
+
+a {
+	color: var(--link-color);
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+textarea {
+	display: inline-block;
+	width: 100%;
+	resize: vertical;
+}
+
+input[type="number"] {
+	max-width: 50px;
+}
+
+label, div.form-row {
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: flex-start;
+	margin: 1em auto;
+	padding-bottom: 0.5em;
+	border-bottom: 1px dashed var(--body-color);
+}
+
+label *,
+div.form-row-content {
+	flex: 1 1 100px;
+}
+
+div.form-row label {
+	display: inline;
+	border: none;
+	margin: none;
+}
+
+div.form-row-label {
+	font-weight: bold;
+	flex: 0 0 300px;
+}
+
+button {
+	display: block;
+	margin: 1em auto 0 auto;
+}
+
+iframe#discord-connect-iframe {
+	position: absolute;
+	top: 10vh;
+	height: 60vh;
+	width: 100%;
+	background: var(--section-bg);
+}
