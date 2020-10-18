@@ -11,11 +11,11 @@
 			<h1>Nouveau JdR &#127922; Union Rôlistes</h1>
 		</header>
 		<section>
-			<label>
-				<div class="form-row-label">Mode sombre &#127769;</div>
-				<input type="checkbox" id="dark-mode-toggle" name="dark-mode-toggle" checked>
-			</label>
 			<form method="post" action="#" id="new-game-form">
+				<label>
+					<div class="form-row-label">Mode sombre &#127769;</div>
+					<input type="checkbox" id="dark-mode-toggle" name="dark-mode-toggle" checked>
+				</label>
 				<div class="form-row">
 					<div class="form-row-label">Nombre de joueurs</div>
 					<div class="form-row-content">
@@ -56,24 +56,29 @@
 					<div class="form-row-label">Durée estimée &#9201;</div>
 					<select name="estimated-duration" required>
 						<option value="null" disabled hidden selected>-h--</option>
-						<option value="30">0h30</option>
-						<option value="60">1h00</option>
-						<option value="90">1h30</option>
-						<option value="120">2h00</option>
-						<option value="150">2h30</option>
-						<option value="180">3h00</option>
-						<option value="210">3h30</option>
-						<option value="240">4h00</option>
-						<option value="270">4h30</option>
-						<option value="300">5h00</option>
-						<option value="330">5h30</option>
+						<option>0h30</option>
+						<option>1h00</option>
+						<option>1h30</option>
+						<option>2h00</option>
+						<option>2h30</option>
+						<option>3h00</option>
+						<option>3h30</option>
+						<option>4h00</option>
+						<option>4h30</option>
+						<option>5h00</option>
+						<option>5h30</option>
 					</select>
 				</label>
 				<label>
 					<div class="form-row-label">Maître du Jeu &#128081;</div>
 					<div class="form-row-content">
-						<span id="discord-user"></span>
-						<button type="button" id="discord-connect-btn">connexion Discord</button>
+						<?php if (!empty($discordUsername)): ?>
+						<div id="discord-user">
+							<img height="32px" width="32px" src="<?= $discordImgSrc ?>" alt="your discord avatar">
+							<div><?= $discordUsername ?></div>
+						</div>
+						<?php endif; ?>
+						<a id="discord-connect-link" href="<?= $discordOAuthAuthorizeURL ?>">connexion Discord</a>
 					</div>
 				</label>
 				<div class="form-row">
@@ -128,7 +133,7 @@
 					<div class="form-row-label">Joueurs mineurs (-18) acceptés &#128118;</div>
 					<div class="form-row-content">
 						<label>
-							<input type="radio" name="young-players-allowed" value="yes" checked required>
+							<input type="radio" name="young-players-allowed" value="yes" required>
 							oui
 						</label>
 						<br>
@@ -158,7 +163,6 @@
 				<a href="https://github.com/Bevelopment/PageJDR">dépôt GitHub</a>
 			</p>
 		</footer>
-		<iframe id="discord-connect-iframe" src="<?= $discordOAuthAuthorizeURL ?>"></iframe>
 		<script src="js/front.js"></script>
 	</body>
 </html>

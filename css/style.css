@@ -117,10 +117,28 @@ button {
 	margin: 1em auto 0 auto;
 }
 
-iframe#discord-connect-iframe {
-	position: absolute;
-	top: 10vh;
-	height: 60vh;
-	width: 100%;
-	background: var(--section-bg);
+div#discord-user {
+	display: flex;
+	flex-flow: row wrap;
+	align-content: center;
+	max-width: 150px;
+	height: 32px;
+	background: var(--body-bg);
+	border-radius: 16px;
+	margin: 0 auto;
+	padding: 0.5em;
+	box-shadow: 2px 2px 2px var(--box-shadow-color);
+}
+
+div#discord-user div {
+	flex: 1 1 100px;
+	margin: auto 8px;
+}
+
+div#discord-user img {
+	flex: 0 0 32px;
+	height: 32px;
+	width: 32px;
+	border-radius: 14px;
+	box-shadow: 4px 0 4px var(--box-shadow-color);
 }

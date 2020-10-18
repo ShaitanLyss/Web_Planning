@@ -6,17 +6,6 @@ if(!file_exists("config.php")){
 }
 include("config.php");
 
-/*if (isset($_GET['action']) && $_GET['action'] === "login") {
-	$params = array(
-		'response_type' => 'code',
-		'client_id' => CLIENT_ID,
-		'redirect_uri' => REDIRECT_URI,
-		'scope' => 'identify'
-	);
-	header('Location: https://discordapp.com/api/oauth2/authorize?' . http_build_query($params));
-	die();
-}*/
-
 $discordOAuthAuthorizeURL = 'https://discordapp.com/api/oauth2/authorize?'.http_build_query([
 	'response_type' => 'code',
 	'client_id' => CLIENT_ID,
@@ -45,6 +34,8 @@ if (isset($_GET['code'])) {
 	header('Location: ' . $_SERVER['PHP_SELF']);
 }
 
+$discordUsername = null;
+$discordImgSrc = null;
 if (isset($_SESSION['access_token'])) {
 	$header[] = 'Authorization: Bearer ' . $_SESSION['access_token'];
 	$ch = curl_init("https://discord.com/api/users/@me");
@@ -52,9 +43,8 @@ if (isset($_SESSION['access_token'])) {
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
 	curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
 	$response = json_decode(curl_exec($ch));
-	$pseudo = $response->username . '#' . $response->discriminator;
-	$avatar_url = 'https://cdn.discordapp.com/avatars/' . $response->id . '/' . $response->avatar . '.png' . '?size=32';
-
+	$discordUsername = $response->username . '#' . $response->discriminator;
+	$discordImgSrc = 'https://cdn.discordapp.com/avatars/' . $response->id . '/' . $response->avatar . '.png' . '?size=32';
 }
 
 //Config
@@ -64,7 +54,7 @@ $emot_roll20 = '<:custom_emoji_name:493783713243725844>';
 $emot_discord = '<:custom_emoji_name:434370093627998208>';
 $emot_autre = ':space_invader:';
 
-if (!empty($_POST['game-type'])) {	
+if (!empty($_POST['game-type'])) {
 	$plateform = "";
 	$content = '**Type** ' .$_POST['type']. '\n'.
 		':calendar:  **Date** Le ' . $_POST['date']. '\n' .
