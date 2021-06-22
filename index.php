@@ -1,5 +1,58 @@
-<?php
-session_start();
+﻿<?php
+if (session_status() != PHP_SESSION_ACTIVE)
+    session_start();
+
+require("php/config.php");
+
+if(isset($_GET['action']) && $_GET['action'] === "login"){
+	$params = array(
+		'response_type' => 'code',
+		'client_id' => CLIENT_ID,
+		'redirect_uri' => REDIRECT_URI,
+		'scope' => 'identify'
+	);
+	header('Location: https://discordapp.com/api/oauth2/authorize?' . http_build_query($params));
+	die();	
+
+}
+
+if(isset($_GET['code'])){
+	$post = array(
+		"grant_type" => "authorization_code",
+		"client_id" => CLIENT_ID,
+		"client_secret" => CLIENT_SECRET,
+		"redirect_uri" => REDIRECT_URI,
+		"code" => $_GET['code']
+	);
+	$ch = curl_init("https://discord.com/api/oauth2/token");
+
+	if (!curl_setopt($ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4))
+        die();
+	if (!curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE))
+        die();
+    if (!curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($post)))
+        die();
+
+	$response = json_decode(curl_exec($ch));
+	print_r($response);
+	$token = $response->access_token;
+    
+	$_SESSION['access_token'] = $token;
+	header('Location: ' . $_SERVER['PHP_SELF']);
+}
+
+if(isset($_SESSION['access_token'])){
+	$header[] = 'Authorization: Bearer ' . $_SESSION['access_token'];
+	$ch = curl_init("https://discord.com/api/users/@me");
+	curl_setopt($ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+	curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+	$response = json_decode(curl_exec($ch));
+    $user_id = $response->id;
+	$pseudo = $response->username . '#' . $response->discriminator;
+	$avatar_url = 'https://cdn.discordapp.com/avatars/' . $response->id . '/' . $response->avatar . '.png' . '?size=32';
+
+}
 
 $emot_twitch = ' <:custom_emoji_name:434370263518412820> ';
 $emot_roll20 = ' <:custom_emoji_name:493783713243725844> ';
@@ -125,18 +178,19 @@ $emot_autre = ' :space_invader: ';
             <div class="form-group row">
                 <label class="col-sm-5 col-form-label">Maître du jeu 👑</label>
                 <div class="col-sm-7">
-                    <input type="button" value="Connect">
-                <!--?php
+                <?php
                     if(isset($_SESSION['access_token'])){
-                                echo "<img src='$avatar_url'/>";
-                                echo $pseudo;
-                    }else{ 
-                
-                        echo '<input type="button" value="Connect" style="border-radius:10px;" onclick="window.location.href='. "" . '?action=login/>';
-                    }
-                ?>-->
+                        echo "<img src='$avatar_url'/>";
+                        echo "&nbsp" . $pseudo;
+                    }else{ ?>
+                        <input type="button" value="Se connecter" style="border-radius:10px;" onclick="window.location.href='<?php echo REDIRECT_URI . '?action=login'; ?>'"/>
+                    <?php } ?>
                 </div>
             </div>
+            <?php
+                if (isset($user_id))
+                        echo '<input type=hidden name="user_id" value="' . $user_id .'">';
+            ?>
             
             <!-- Sélection du système jdr -->
             <div class="form-group row">
@@ -171,9 +225,9 @@ $emot_autre = ' :space_invader: ';
             <div class="form-group row">
                 <label class="col-sm-5 col-form-label"> Outils 🛠 </label>
                 <div class="col-sm-7">
-                    <label><input class="uk-checkbox" name="platform" type="checkbox" value="<:custom_emoji_name:434370263518412820>"> Partie diffusée sur Twitch <img src="img/iconTwitch.png"></label><br>
-                    <label><input class="uk-checkbox" name="platform" type="checkbox" value="<:custom_emoji_name:493783713243725844>"> Partie jouée sur Roll20 <img src="img/iconRoll20.png"></label><br>
-                    <label><input class="uk-checkbox" name="platform" type="checkbox" value="<:custom_emoji_name:434370093627998208>" checked> Partie jouée sur Discord <img src="img/iconDiscord.png"></label><br>
+                    <label><input class="uk-checkbox" name="platform" type="checkbox" value="<?=$emot_twitch?>"> Partie diffusée sur Twitch <img src="img/iconTwitch.png"></label><br>
+                    <label><input class="uk-checkbox" name="platform" type="checkbox" value="<?=$emot_roll20?>"> Partie jouée sur Roll20 <img src="img/iconRoll20.png"></label><br>
+                    <label><input class="uk-checkbox" name="platform" type="checkbox" value="<?=$emot_discord?>" checked> Partie jouée sur Discord <img src="img/iconDiscord.png"></label><br>
                     <label><input class="uk-checkbox" name="platform" type="checkbox" value=":space_invader:"> Partie jouée sur Autre <img src="img/iconAutre.png"></label><br>	
                 </div>
             </div>
