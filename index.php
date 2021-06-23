@@ -4,6 +4,7 @@ if (session_status() != PHP_SESSION_ACTIVE)
 
 require("php/config.php");
 
+
 if(isset($_GET['action']) && $_GET['action'] === "login"){
 	$params = array(
 		'response_type' => 'code',
@@ -34,6 +35,9 @@ if(isset($_GET['code'])){
         die();
 
 	$response = json_decode(curl_exec($ch));
+    $f = fopen("log.txt", 'a');
+    fwrite($f, curl_error($ch) . "\n");
+    fclose($f);
 	print_r($response);
 	$token = $response->access_token;
     
@@ -52,13 +56,16 @@ if(isset($_SESSION['access_token'])){
 	$pseudo = $response->username . '#' . $response->discriminator;
 	$avatar_url = 'https://cdn.discordapp.com/avatars/' . $response->id . '/' . $response->avatar . '.png' . '?size=32';
 
+
 }
+
+if (isset($_GET['webhook']))
+    $_SESSION['webhook'] = $_GET['webhook'];
 
 $emot_twitch = ' <:custom_emoji_name:434370263518412820> ';
 $emot_roll20 = ' <:custom_emoji_name:493783713243725844> ';
 $emot_discord = ' <:custom_emoji_name:434370093627998208> ';
 $emot_autre = ' :space_invader: ';
-
 
 ?>
 
@@ -82,7 +89,7 @@ $emot_autre = ' :space_invader: ';
     <script src="js/tail.datetime-fr.js"></script>
 </head>
 <body onload="feed();" id="body">
-    <section>
+    <section class="container-fluid">
         <!-- Button for changing color mode -->
         <article>
             <div class="form-group row">
@@ -187,9 +194,12 @@ $emot_autre = ' :space_invader: ';
                     <?php } ?>
                 </div>
             </div>
+            <input type=hidden name="webhook_url" value="<?= $_SESSION['webhook'] ?>">
             <?php
                 if (isset($user_id))
                         echo '<input type=hidden name="user_id" value="' . $user_id .'">';
+                if (isset($pseudo))
+                        echo '<input type=hidden name="pseudo" value="' . $pseudo . '">';
             ?>
             
             <!-- Sélection du système jdr -->
